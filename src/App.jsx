@@ -1,6 +1,4 @@
-import { useState } from 'react'
-import { useContext } from 'react'
-import { createContext } from 'react'
+import { createContext, useState, useContext } from 'react'
 import './App.css'
 
 const appContext = createContext(null)
@@ -27,11 +25,24 @@ const User = () => {
   return <div>User:{contextValue.appState.user.name}</div>
 
 }
+
+//规范 state 创建流程
+const reducer = (state, { type, payload }) => {
+  if (type === 'updateUser') {
+    return {
+      ...state,
+      user: {
+        ...state.user,
+        ...payload
+      }
+    }
+  }
+}
+
 const UserModifier = () => {
   const { appState, setAppState } = useContext(appContext)
   const onChange = (e) => {
-    appState.user.name = e.target.value
-    setAppState({ ...appState })
+    setAppState(reducer(appState, { type: 'updateUser', payload: { name: e.target.value } }))
   }
   return <div>
     <input value={appState.user.name}
