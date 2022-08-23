@@ -1,27 +1,5 @@
-import { useEffect } from 'react'
-import { createContext, useState, useContext } from 'react'
 import './App.css'
-
-const appContext = createContext(null)
-
-const store = {
-  state: {
-    user: { name: 'vino', age: 20 }
-  },
-  setState(newState) {
-    store.state = newState
-    store.listeners.forEach(listener => listener(store.state))
-  },
-  listeners: [],
-  subscribe(listener) {
-    store.listeners.push(listener)
-    //取消订阅
-    return () => {
-      const index = store.listeners.indexOf(listener)
-      store.listeners.splice(index, 1)
-    }
-  }
-}
+import { store, connect, appContext } from './redux'
 
 function App() {
   return (
@@ -32,37 +10,6 @@ function App() {
     </appContext.Provider>
   )
 }
-//规范 state 创建流程
-const reducer = (state, { type, payload }) => {
-  if (type === 'updateUser') {
-    return {
-      ...state,
-      user: {
-        ...state.user,
-        ...payload
-      }
-    }
-  }
-}
-// 创建connect
-const connect = (Component) => {
-  return (props) => {
-    const { state, setState } = useContext(appContext)
-    //render
-    const [, update] = useState({})
-    useEffect(() => {
-      store.subscribe(() => {
-        update({})
-      })
-    }, [])
-    // dispatch 规范 setState 流程
-    const dispatch = (action) => {
-      setState(reducer(state, action))
-    }
-    return <Component {...props} dispatch={dispatch} state={state} />
-  }
-}
-
 const 大儿子 = () => {
   console.log('大儿子')
   return <section>大儿子<User /></section>
