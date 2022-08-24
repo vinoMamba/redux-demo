@@ -22,12 +22,14 @@ const 幺儿子 = () => {
   console.log('幺儿子')
   return <section>幺儿子</section>
 }
-const User = connect(({ state }) => {
+const User = connect(state => {
+  return { user: state.user }
+})(({ user }) => {
   console.log('User')
-  return <div>User:{state.user.name}</div>
+  return <div>User:{user.name}</div>
 })
 
-const UserModifier = connect(({ dispatch, state }) => {
+const UserModifier = connect()(({ dispatch, state }) => {
   console.log('UserModifier')
   const onChange = (e) => {
     dispatch({ type: 'updateUser', payload: { name: e.target.value } })
