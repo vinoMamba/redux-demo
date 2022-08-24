@@ -1,7 +1,7 @@
 import './App.css'
 import { groupConnect } from './connect/groupConnect'
 import { userConnect } from './connect/userConnect'
-import { createStore, appContext } from './redux'
+import { createStore, Provider } from './redux'
 
 
 const reducer = (state, { type, payload }) => {
@@ -23,11 +23,11 @@ const store = createStore(reducer, {
 
 function App() {
   return (
-    <appContext.Provider value={store}>
+    <Provider store={store}>
       <大儿子 />
       <二儿子 />
       <幺儿子 />
-    </appContext.Provider>
+    </Provider>
   )
 }
 const 大儿子 = () => {

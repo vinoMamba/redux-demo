@@ -1,6 +1,14 @@
 import { useEffect, useState, useContext, createContext } from "react"
 
-export const appContext = createContext(null)
+const appContext = createContext(null)
+
+export const Provider = ({ store, children }) => {
+  return (
+    <appContext.Provider value={store}>
+      {children}
+    </appContext.Provider>
+  )
+}
 
 const store = {
   state: undefined,
