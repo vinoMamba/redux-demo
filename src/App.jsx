@@ -1,7 +1,25 @@
 import './App.css'
 import { groupConnect } from './connect/groupConnect'
 import { userConnect } from './connect/userConnect'
-import { store, appContext } from './redux'
+import { createStore, appContext } from './redux'
+
+
+const reducer = (state, { type, payload }) => {
+  if (type === 'updateUser') {
+    return {
+      ...state,
+      user: {
+        ...state.user,
+        ...payload
+      }
+    }
+  }
+}
+
+const store = createStore(reducer, {
+  user: { name: 'vino', age: 18 },
+  group: { name: 'frontend' }
+})
 
 function App() {
   return (

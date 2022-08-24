@@ -2,11 +2,9 @@ import { useEffect, useState, useContext, createContext } from "react"
 
 export const appContext = createContext(null)
 
-export const store = {
-  state: {
-    user: { name: 'vino', age: 20 },
-    group: { name: 'frontend' }
-  },
+const store = {
+  state: undefined,
+  reducer: undefined,
   setState(newState) {
     store.state = newState
     store.listeners.forEach(listener => listener(store.state))
@@ -21,19 +19,13 @@ export const store = {
     }
   }
 }
-
-//规范 state 创建流程
-const reducer = (state, { type, payload }) => {
-  if (type === 'updateUser') {
-    return {
-      ...state,
-      user: {
-        ...state.user,
-        ...payload
-      }
-    }
-  }
+export const createStore = (reducer, initialState) => {
+  store.state = initialState
+  store.reducer = reducer
+  return store
 }
+
+
 
 const changed = (data, newData) => {
   let changed = false
@@ -50,7 +42,7 @@ const changed = (data, newData) => {
 export const connect = (mapStateToProps, mapDispatchToProps) => (Component) => {
   return (props) => {
     // dispatch 规范 setState 流程
-    const dispatch = (action) => { setState(reducer(state, action)) }
+    const dispatch = (action) => { setState(store.reducer(state, action)) }
     const { state, setState } = useContext(appContext)
     //render
     const [, update] = useState({})
