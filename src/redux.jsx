@@ -47,25 +47,24 @@ const changed = (data, newData) => {
 
 
 // 创建connect
-export const connect = (selector) => (Component) => {
+export const connect = (mapStateToProps, mapDispatchToProps) => (Component) => {
   return (props) => {
+    // dispatch 规范 setState 流程
+    const dispatch = (action) => { setState(reducer(state, action)) }
     const { state, setState } = useContext(appContext)
     //render
     const [, update] = useState({})
-    const data = selector ? selector(state) : { state }
+    const data = mapStateToProps ? mapStateToProps(state) : { state }
+    const dispatchers = mapDispatchToProps ? mapDispatchToProps(dispatch) : { dispatch }
     useEffect(() => {
       //return 为了取消订阅
       return store.subscribe(() => {
-        const newData = selector ? selector(store.state) : { state: store.state }
+        const newData = mapStateToProps ? mapStateToProps(store.state) : { state: store.state }
         if (changed(data, newData)) {
           update({})
         }
       })
-    }, [selector])
-    // dispatch 规范 setState 流程
-    const dispatch = (action) => {
-      setState(reducer(state, action))
-    }
-    return <Component {...props} {...data} dispatch={dispatch} />
+    }, [mapStateToProps])
+    return <Component {...props} {...data} {...dispatchers} />
   }
 }
