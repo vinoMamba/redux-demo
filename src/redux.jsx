@@ -4,7 +4,8 @@ export const appContext = createContext(null)
 
 export const store = {
   state: {
-    user: { name: 'vino', age: 20 }
+    user: { name: 'vino', age: 20 },
+    group: { name: 'frontend' }
   },
   setState(newState) {
     store.state = newState
@@ -34,6 +35,17 @@ const reducer = (state, { type, payload }) => {
   }
 }
 
+const changed = (data, newData) => {
+  let changed = false
+  Object.keys(data).forEach(key => {
+    if (data[key] !== newData[key]) {
+      changed = true
+    }
+  })
+  return changed
+}
+
+
 // 创建connect
 export const connect = (selector) => (Component) => {
   return (props) => {
@@ -42,10 +54,14 @@ export const connect = (selector) => (Component) => {
     const [, update] = useState({})
     const data = selector ? selector(state) : { state }
     useEffect(() => {
-      store.subscribe(() => {
-        update({})
+      //return 为了取消订阅
+      return store.subscribe(() => {
+        const newData = selector ? selector(store.state) : { state: store.state }
+        if (changed(data, newData)) {
+          update({})
+        }
       })
-    }, [])
+    }, [selector])
     // dispatch 规范 setState 流程
     const dispatch = (action) => {
       setState(reducer(state, action))

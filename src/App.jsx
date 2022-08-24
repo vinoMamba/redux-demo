@@ -18,10 +18,14 @@ const 二儿子 = () => {
   console.log('二儿子')
   return <section>二儿子<UserModifier /></section>
 }
-const 幺儿子 = () => {
+const 幺儿子 = connect(state => {
+  return { group: state.group }
+})(({ group }) => {
   console.log('幺儿子')
-  return <section>幺儿子</section>
+  return <section>幺儿子{group.name}</section>
 }
+)
+
 const User = connect(state => {
   return { user: state.user }
 })(({ user }) => {
